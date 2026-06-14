@@ -35,6 +35,10 @@ app.use(
 //   },
 // ]
 
+app.get('/health', (req, res) => {
+  res.send('ok')
+})
+
 app.get('/api/persons', (request, response, next) => {
   Person.find({})
     .then((persons) => {
