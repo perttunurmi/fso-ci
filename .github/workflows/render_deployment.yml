@@ -1,0 +1,15 @@
+name: Render deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  render_deployment:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Trigger deployment
+        run: |
+          curl ${{ secrets.RENDER_DEPLOY_HOOK }}
