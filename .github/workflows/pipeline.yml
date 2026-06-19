@@ -9,10 +9,14 @@ on:
   push:
     branches:
       - main
+    pull_request:
+      branches: [main]
+      types: [opened, synchronized]
 
 jobs:
   simple_deployment_pipeline:
     runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' }}
     steps:
       - uses: actions/checkout@v6
 
