@@ -11,12 +11,11 @@ on:
       - main
   pull_request:
     branches: [main]
-    types: [opened, synchronize]
+    types: [opened, synchronize, reopened, closed]
 
 jobs:
   simple_deployment_pipeline:
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' }}
     steps:
       - uses: actions/checkout@v6
 
@@ -41,6 +40,11 @@ jobs:
 
       - name: Run Playwright tests
         run: npm run test:e2e
+
+      - uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          status: ${{ job.status }}
 
   tag_release:
     needs: [simple_deployment_pipeline]
