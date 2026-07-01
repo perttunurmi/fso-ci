@@ -54,10 +54,11 @@ jobs:
       - uses: sarisia/actions-status-discord@v1
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
-          status: ${{ job.status }}
+          status: ${{ needs.simple_deployment_pipeline.result }}
 
   notify_failure:
-    if: ${{ needs.simple_deployment_pipeline.result != 'success' }}
+    needs: [simple_deployment_pipeline]
+    if: ${{ always() && needs.simple_deployment_pipeline.result != 'success' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -68,7 +69,7 @@ jobs:
       - uses: sarisia/actions-status-discord@v1
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
-          status: ${{ job.status }}
+          status: ${{ needs.simple_deployment_pipeline.result }}
 
 
   tag_release:
