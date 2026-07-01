@@ -41,10 +41,35 @@ jobs:
       - name: Run Playwright tests
         run: npm run test:e2e
 
+  notify_success:
+    needs: [simple_deployment_pipeline]
+    if: ${{ needs.simple_deployment_pipeline.result == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
       - uses: sarisia/actions-status-discord@v1
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
           status: ${{ job.status }}
+
+  notify_failure:
+    if: ${{ needs.simple_deployment_pipeline.result != 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+      - uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          status: ${{ job.status }}
+
 
   tag_release:
     needs: [simple_deployment_pipeline]
